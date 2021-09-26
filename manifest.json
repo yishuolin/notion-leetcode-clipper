@@ -1,6 +1,6 @@
 {
-    "name": "Notion-LeetCode",
-    "description": "Insert LeetCode notes into Notion database.",
+    "name": "Notion-LeetCode-Clipper",
+    "description": "Clip LeetCode problem to you Notion database.",
     "version": "1.0",
     "manifest_version": 3,
     "action": {

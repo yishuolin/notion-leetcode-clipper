@@ -1,151 +1,56 @@
-import axios from 'axios';
 import '../css/popup.css';
-
-const NOTION_DATABASE_ID = '';
-const NOTION_KEY = '';
+import { getDateString } from './helpers';
+import { getDatabase, addItem } from './requests';
 
 let options = [];
-
-const getDateString = () => {
-  const d = new Date();
-  const month = (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1);
-  return d.getFullYear() + '-' + month + '-' + d.getDate();
-};
-
 (async () => {
-  const response = await axios.get(
-    `https://api.notion.com/v1/databases/${NOTION_DATABASE_ID}`,
-    {
-      headers: {
-        Authorization: `Bearer ${NOTION_KEY}`,
-        'Notion-Version': '2021-05-13',
-      },
-    },
-  );
-  options = response.data.properties.Tags.multi_select.options;
+  options = await getDatabase();
 })();
 
-const showOptions = () => {
-  if (document.querySelector('#select-popup').style.display === 'block') return;
+const showOptionsPopup = () => {
   const popup = document.querySelector('#select-popup');
-  const area = document.querySelector('#tags');
-  const selectedTags = [...document.querySelectorAll('.tag')].map(
+  if (popup.style.display === 'block') return;
+
+  const tagsArea = document.querySelector('#tags');
+  const selectedTags = [...document.querySelectorAll('.selected-tag')].map(
     (el) => el.innerText,
   );
+
   popup.innerHTML = '';
+  getOptionsPopupContent(popup, selectedTags);
+  addOptionsPopupEventListener(popup, tagsArea);
+
+  popup.style.display = 'block';
+};
+
+const getOptionsPopupContent = (popup, selectedTags) => {
   options.forEach((option) => {
-    popup.innerHTML += `
-      <div id="checkbox-${
-        option.id
-      }" class="checkbox-container"><input type="checkbox" name="option" id="${
-      option.id
-    }" value="${option.name}" ${
-      selectedTags.includes(option.name) ? 'checked' : ''
-    }/><label for="${option.id}">${option.name}</label></div>
-    `;
+    const { id, name } = option;
+    popup.innerHTML += getCheckbox(selectedTags, id, name);
   });
   popup.innerHTML += `<button id="popup-cancel">Cancel</button><button id="popup-ok">Ok</button>`;
+};
+
+const getCheckbox = (selectedTags, id, name) => `
+  <div id="checkbox-${id}" class="checkbox-container">
+    <input type="checkbox" name="checkbox-option" id="${id}" value="${name}" 
+      ${selectedTags.includes(name) ? 'checked' : ''}/>
+    <label for="${id}">${name}</label>
+  </div>
+  `;
+
+const addOptionsPopupEventListener = (popup, tagsArea) => {
   document.querySelector('#popup-cancel').addEventListener('click', () => {
     popup.style.display = 'none';
   });
   document.querySelector('#popup-ok').addEventListener('click', () => {
     popup.style.display = 'none';
-    area.innerHTML = '';
-    const allCheckboxes = document.getElementsByName('option');
-    allCheckboxes.forEach((checkbox) => {
+    tagsArea.innerHTML = '';
+    document.getElementsByName('checkbox-option').forEach((checkbox) => {
       if (checkbox.checked)
-        area.innerHTML += `<div class="tag">${checkbox.value}</div>`;
+        tagsArea.innerHTML += `<div class="selected-tag">${checkbox.value}</div>`;
     });
   });
-  popup.style.display = 'block';
-};
-
-const addItem = async (data) => {
-  const { name, link, difficulty, algorithms, notes, duration, tags } = data;
-
-  try {
-    const response = await axios.post(
-      'https://api.notion.com/v1/pages/',
-      {
-        parent: { database_id: NOTION_DATABASE_ID },
-        properties: {
-          Name: {
-            title: [
-              {
-                text: {
-                  content: name,
-                },
-              },
-            ],
-          },
-          Link: {
-            url: link,
-          },
-          Difficulty: {
-            select: {
-              name: difficulty,
-            },
-          },
-          Algorithms: {
-            rich_text: [
-              {
-                type: 'text',
-                text: {
-                  content: algorithms,
-                },
-              },
-            ],
-          },
-          Notes: {
-            rich_text: [
-              {
-                type: 'text',
-                text: {
-                  content: notes || '',
-                },
-              },
-            ],
-          },
-          'Time Spent': {
-            rich_text: [
-              {
-                type: 'text',
-                text: {
-                  content: duration || '',
-                },
-              },
-            ],
-          },
-          Date: {
-            date: {
-              start: getDateString(),
-            },
-          },
-          Tags: {
-            multi_select: [...document.querySelectorAll('.tag')].map((el) => ({
-              name: el.innerText,
-            })),
-          },
-        },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${NOTION_KEY}`,
-          'Content-Type': 'application/json',
-          'Notion-Version': '2021-05-13',
-        },
-      },
-    );
-    console.log(response);
-    document.querySelector('#submit').innerText = 'Ok!';
-    document.querySelector('#submit').removeEventListener('click', create);
-    setTimeout(() => {
-      document.querySelector('#submit').innerText = 'Create';
-      document.querySelector('#submit').addEventListener('click', create);
-    }, 2000);
-  } catch (error) {
-    console.log(error);
-  }
 };
 
 const setLoading = () => {
@@ -153,22 +58,39 @@ const setLoading = () => {
 };
 
 const create = () => {
-  const algorithms = document.getElementById('algorithms').value;
-  const notes = document.getElementById('notes').value;
-  const duration = document.getElementById('duration').value;
-  const tags = [];
+  const inputValue = getInputValue();
   setLoading();
-  // get other parameters from content
+  // get other parameters from content.js
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, '', (dataFromContent) => {
-      // call api
-      addItem({ ...dataFromContent, algorithms, notes, duration, tags });
+      addItem({ ...dataFromContent, ...inputValue }, createSuccess);
     });
   });
 };
 
+const getInputValue = () => {
+  const algorithms = document.getElementById('algorithms').value;
+  const notes = document.getElementById('notes').value;
+  const duration = document.getElementById('duration').value;
+  const date = getDateString();
+  const tags = [...document.querySelectorAll('.selected-tag')].map((el) => ({
+    name: el.innerText,
+  }));
+  return { algorithms, notes, duration, date, tags };
+};
+
+const createSuccess = () => {
+  const submitButton = document.querySelector('#submit');
+  submitButton.innerText = 'Ok!';
+  submitButton.removeEventListener('click', create);
+  setTimeout(() => {
+    submitButton.innerText = 'Create';
+    submitButton.addEventListener('click', create);
+  }, 2000);
+};
+
 document.getElementById('submit').addEventListener('click', create);
-document.getElementById('tags').addEventListener('click', showOptions);
+document.getElementById('tags').addEventListener('click', showOptionsPopup);
 document.addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
     event.preventDefault();

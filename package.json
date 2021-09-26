@@ -10,6 +10,7 @@
         "webpack": "^5.54.0"
     },
     "devDependencies": {
+        "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^9.0.1",
         "css-loader": "^6.3.0",
         "html-loader": "^2.1.2",

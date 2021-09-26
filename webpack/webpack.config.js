@@ -2,12 +2,11 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  target: 'node',
   entry: {
     popup: './src/js/popup.js',
-    // background: './src/js/background.js',
     content: './src/js/content.js',
   },
   module: {
@@ -38,6 +37,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [{ from: 'manifest.json', to: 'manifest.json' }],
     }),
+    new CleanWebpackPlugin(),
   ],
   output: {
     filename: '[name].js',

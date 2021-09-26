@@ -19,14 +19,20 @@ A Chrome extension for clipping LeetCode problem to you Notion database.
    yarn install
    ```
 
-4. Build bundle files.
+4. Paste your **NOTION_KEY** and **NOTION_DATABASE_ID** in `src/js/request.js`
+   ```javascript
+   const NOTION_KEY = '';
+   const NOTION_DATABASE_ID = '';
+   ```
+
+5. Build bundle files.
 
    ```bash
    yarn build
    ```
 
-5. Go to **Extension Management Page** by navigating to `chrome://extensions`
+6. Go to **Extension Management Page** by navigating to `chrome://extensions`
 
-6. Enable **Developer Mode** by cliking the toggle switch on the upper right corner.
+7. Enable **Developer Mode** by cliking the toggle switch on the upper right corner.
 
-7. Click the **Load unpacked** button, select `notion-leetcode-clipper/build` directory.
+8. Click the **Load unpacked** button, select `notion-leetcode-clipper/build` directory.
