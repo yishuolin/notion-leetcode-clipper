@@ -1,0 +1,22 @@
+{
+    "name": "notion-leetcode",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "build": "webpack --config ./webpack/webpack.config.js"
+    },
+    "dependencies": {
+        "axios": "^0.21.4",
+        "webpack": "^5.54.0"
+    },
+    "devDependencies": {
+        "copy-webpack-plugin": "^9.0.1",
+        "css-loader": "^6.3.0",
+        "html-loader": "^2.1.2",
+        "html-webpack-plugin": "^5.3.2",
+        "prettier": "^2.4.1",
+        "style-loader": "^3.3.0",
+        "terser-webpack-plugin": "^5.2.4",
+        "webpack-cli": "^3.3.12"
+    }
+}

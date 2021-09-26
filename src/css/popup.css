@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+textarea {
+  width: 300px;
+  padding: 5px;
+  font-size: 18px;
+  background-color: rgb(246, 246, 246);
+  border: 2px solid rgb(228, 228, 228);
+  border-radius: 3px;
+  resize: none;
+}
+textarea:focus {
+  outline: none !important;
+}
+label {
+  display: block;
+  padding-bottom: 5px;
+  font-weight: 500;
+}
+.input-container {
+  padding: 5px;
+}
+#submit {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  user-select: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+  height: 28px;
+  border-radius: 3px;
+  box-shadow: rgb(15 15 15 / 10%) 0px 0px 0px 1px inset, rgb(15 15 15 / 10%) 0px 1px 2px;
+  background: rgb(46, 170, 220);
+  color: white;
+  fill: white;
+  line-height: 1.2;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+#tags {
+  cursor: pointer;
+  width: 300px;
+  padding: 5px;
+  font-size: 18px;
+  background-color: rgb(246, 246, 246);
+  border: 2px solid rgb(228, 228, 228);
+  border-radius: 3px;
+  height: 20px;
+  display: flex;
+}
+#select-popup {
+  background-color: #fff;
+  display: none;
+  position: relative;
+  top: -5px;
+  width: 310px;
+  border: 2px solid rgb(228, 228, 228);
+  border-radius: 3px;
+}
+.select-option {
+  padding: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+.checkbox-container {
+  display: flex;
+}
+.checkbox-container > label {
+  width: 100%;  
+  cursor: pointer;
+}
+#tags > div {
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 0px;
+  height: 18px;
+  border-radius: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  font-size: 14px;
+  line-height: 120%;
+  color: rgb(55, 53, 47);
+  background: rgba(245, 93, 0, 0.2);
+  margin: 0px 6px 6px 0px;
+}

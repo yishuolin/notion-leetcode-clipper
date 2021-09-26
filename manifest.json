@@ -1,0 +1,25 @@
+{
+    "name": "Notion-LeetCode",
+    "description": "Insert LeetCode notes into Notion database.",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://leetcode.com/*"
+            ],
+            "js": ["content.js"]
+        }
+    ],
+    "host_permissions": [
+        "https://api.notion.com/v1/pages/"
+    ],
+    "commands": {
+        "_execute_action": {
+            "suggested_key": "Ctrl+Shift+Y"
+        }
+    }
+}
