@@ -91,9 +91,3 @@ const createSuccess = () => {
 
 document.getElementById('submit').addEventListener('click', create);
 document.getElementById('tags').addEventListener('click', showOptionsPopup);
-document.addEventListener('keyup', (event) => {
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    create();
-  }
-});
