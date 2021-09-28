@@ -21,7 +21,7 @@ const getDatabase = async (id = NOTION_DATABASE_ID) => {
       'Notion-Version': '2021-05-13',
     },
   });
-  return response.data.properties.Tags.multi_select.options;
+  return response.data;
 };
 
 const addItem = async (data, callback, id = NOTION_DATABASE_ID) => {
